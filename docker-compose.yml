@@ -1,0 +1,25 @@
+version: "3.7"
+
+volumes:
+  bundle: {}
+  redis_data: {}
+  postgres_data: {}
+  redis_test_data:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+
+services:
+  schemaspy:
+    image: schemaspy/schemaspy:6.1.0
+    command: >
+      -t    sqlite
+      -db   db/development.sqlite3
+      -port 3000
+      -u    sqlite
+
+      schemaspy -t %SCRIBESTOOLS%/SchemaSpy/sqlite.properties -db db.sqlite3 -sso -o docs\SchemaSpy
+    volumes:
+      - ./db/schemaspy:/output
+    labels:
+      com.selfapy.api.service: schemaspy
