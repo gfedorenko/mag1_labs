@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Render current development database schema via Schemaspy and expose it locally
+# on port 8080
+# Usage: bin/schemaspy
+
+set -eo pipefail
+
+bin/check-docker
+
+docker-compose run --rm schemaspy
+echo "✓ Schema is built. Serving at localhost:8080"
+
+docker run \
+  --rm \
+  --interactive \
+  --tty \
+  --volume "${PWD}/db/schemaspy:/usr/share/nginx/html:ro" \
+  --publish "8080:80" \
+  nginx:1.17.6-alpine
